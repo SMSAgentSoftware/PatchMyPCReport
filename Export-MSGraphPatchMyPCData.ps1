@@ -10,8 +10,7 @@
 
 
 #region ------------------------------------------ Variables --------------------------------------------
-[validateset('Overview','Detailed','All')]
-$ReportType = "All" # Specify 'Overview' for the Overview report only, 'Detailed' for the Detailed report only, or 'All' for both
+$ReportType = "Overview" # Only the Overview report is now available
 $ResourceGroup = "<ResourceGroupName>" # Reource group that hosts the storage account
 $StorageAccount = "<StorageAccountName>" # Storage account name
 $Container = "<ContainerName>" # Container name
@@ -576,6 +575,7 @@ Function Export-PmpAppsList {
 }
 
 # Function to get a device install status report for a list of applications
+<#
 Function Get-DeviceInstallStatusReport {
     param($AppIDs)
 
@@ -931,6 +931,7 @@ Function Get-DeviceInstallStatusReport {
     $StatusOverviewTable | Export-Csv -Path "$Destination\PmpAppsDetailsInstallStatusOverviewReport.csv" -NoTypeInformation -Force
 
 }
+#>
 
 # Function to filter out duplicates for exported data from Graph
 Function script:Remove-MSGraphExportJobDuplicates {
@@ -961,7 +962,7 @@ Export-PmpAppsList
 #####################################
 ## Export the Overview report data ##
 #####################################
-if ($ReportType -in ("Overview","All"))
+if ($ReportType -in ("Overview"))
 {
     Write-output "Exporting status overview report and summary data"
     Export-StatusReport -ReportOutputName "PmpAppsStatusOverviewReport" -ReportEntityName "getAppStatusOverviewReport" -ApplicationData $PmpApps
@@ -970,11 +971,11 @@ if ($ReportType -in ("Overview","All"))
 #####################################
 ## Export the Detailed report data ##
 #####################################
-if ($ReportType -in ("Detailed","All"))
-{
-    Write-output "Retrieving device install status reports and summary data"
-    Get-DeviceInstallStatusReport -AppIDs $PmpApps.Id
-}
+#if ($ReportType -in ("Detailed","All"))
+#{
+#    Write-output "Retrieving device install status reports and summary data"
+#    Get-DeviceInstallStatusReport -AppIDs $PmpApps.Id
+#}
 #endregion ----------------------------------------------------------------------------------------------
 
 
@@ -985,10 +986,10 @@ if ($ReportType -in ("All"))
 {
     $FileList = @("PmpApps.csv","PmpDeviceInstallStatusReport.csv","PmpAppsStatusOverviewReport.csv","PmpAppsOverviewSummaryData.csv","PmpAppsDetailsSummaryData.csv","PmpAppsDetailsInstallStatusOverviewReport.csv")
 }
-elseif ($ReportType -in ("Detailed"))
-{
-    $FileList = @("PmpApps.csv","PmpDeviceInstallStatusReport.csv","PmpAppsDetailsSummaryData.csv","PmpAppsDetailsInstallStatusOverviewReport.csv")
-}
+#elseif ($ReportType -in ("Detailed"))
+#{
+ #   $FileList = @("PmpApps.csv","PmpDeviceInstallStatusReport.csv","PmpAppsDetailsSummaryData.csv","PmpAppsDetailsInstallStatusOverviewReport.csv")
+#}
 else
 {
     $FileList = @("PmpApps.csv","PmpAppsStatusOverviewReport.csv","PmpAppsOverviewSummaryData.csv")
